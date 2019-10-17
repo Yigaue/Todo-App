@@ -5,7 +5,9 @@
    
    <transition-group name="fade" enter-active-class="animated
    fadeInUp" leave-active-class = "animated fadeOutDown">
-   <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" @removedTodo="removeTodo" @finishedEdit = "doneEdit">
+   <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" 
+   :index="index" :checkAll="!anyRemaining" @removedTodo="removeTodo" 
+   @finishedEdit = "finishedEdit" >
     <!-- <div class="todo-item-left">
         <input type="checkbox" v-model ="todo.completed">
         <div v-if ="!todo.editing" @dblclick= "editTodo(todo)" :class="[{completed: todo.completed}, todo-item-label]">{{todo.title}}</div>
@@ -98,14 +100,7 @@ export default {
 
         }
   },
-  directives: {
-  focus: {
-    // directive definition
-    inserted: function (el) {
-      el.focus()
-    }
-  }
-},
+ 
   methods: {
       addTodo(){
           if(this.newTodo.trim().length == 0){
@@ -120,16 +115,16 @@ export default {
          this.idForTodo++
       },
       
-      doneEdit(todo){
-          if(todo.title.trim().length == 0){
-             todo.title = this.beforeEditCache
-          }
-          todo.editing = false;
-      },
-      cancelEdit(todo){
-          todo.title = this.beforeEditCache
-          todo.editing = false
-      },
+    //   doneEdit(todo){
+    //       if(todo.title.trim().length == 0){
+    //          todo.title = this.beforeEditCache
+    //       }
+    //       todo.editing = false;
+    //   },
+    //   cancelEdit(todo){
+    //       todo.title = this.beforeEditCache
+    //       todo.editing = false
+    //   },
       removeTodo(index){
     this.todos.splice(index,1) 
       },
@@ -138,8 +133,11 @@ export default {
       },
       clearCompleted(){
           this.todos = this.todos.filter(todo=> !todo.completed)
-      }
-    
+      },
+
+    finishedEdit(data){
+        this.todos.splice(data.index, 1, data.todo)
+    }
   }
 }
 </script>

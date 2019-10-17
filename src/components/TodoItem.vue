@@ -1,7 +1,7 @@
 <template>
     <div class="todo-item">
         <div class="todo-item-left">
-        <input type="checkbox" v-model ="completed">
+        <input type="checkbox" v-model ="completed" @change="doneEdit">
         <div v-if ="!editing" @dblclick= "editTodo" :class="[{completed: completed}, todo-item-label]">{{title}}</div>
         <input v-else class="todo-item-edit" type="text" v-model="title" 
         @blur="doneEdit" @keyup.enter="doneEdit" @keyup.esc="cancelEdit" v-focus>
@@ -23,6 +23,10 @@ export default {
      index: {
              type: Number,
              required: true,
+         },
+         checkAll:{
+             type: Boolean,
+             reqquired: true,
          }
      } ,
      data(){
@@ -34,6 +38,25 @@ export default {
              'beforeEditCache': ' ',
          }
      },
+     watch: {
+         checkAll(){
+            if(this.checkAll){
+             this.completed = true
+              }
+              else{
+                  this.completed = this.todo.completed
+              }
+            // this.completed = this.checkAll ? true : this.todo.completed
+         } 
+     },
+      directives: {
+  focus: {
+    // directive definition
+    inserted: function (el) {
+      el.focus()
+    }
+  }
+},
      methods: {
          removeTodox(index){
              this.$emit('removedTodo', index)
